@@ -13,6 +13,11 @@ snake[0] = {
 
 let direction = 'right';
 
+let comida = {
+  x: Math.floor(Math.random() * 15 + 1) * box,
+  y: Math.floor(Math.random() * 15 + 1) * box,
+};
+
 function criarBG() {
   context.fillStyle = 'lightgreen';
   context.fillRect(0, 0, 16 * box, 16 * box); /*Desenha o retangulo do jogo */
@@ -24,6 +29,12 @@ function criarCobrinha() {
     context.fillStyle = 'green';
     context.fillRect(snake[i].x, snake[i].y, box, box);
   }
+}
+
+/* Criar comida */
+function drawComida() {
+  context.fillStyle = 'red';
+  context.fillRect(comida.x, comida.y, box, box);
 }
 
 /*Eventos para reconhecer as teclas */
@@ -51,8 +62,23 @@ function iniciarJogo() {
   if (snake[0].y > 15 * box && direction == 'down') snake[0].y = 0;
   if (snake[0].y < 0 * box && direction == 'up') snake[0].y = 16 * box;
 
+  /* For para comparar se a cabeça se choca com o corpo e finaliza o jogo */
+  for (i = 1; i < snake.length; i++) {
+    if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+      clearInterval(jogo);
+      alert('Game Over');
+    }
+  } /* For para comparar se a cabeça se choca com o corpo e finaliza o jogo */
+  for (i = 1; i < snake.length; i++) {
+    if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+      clearInterval(jogo);
+      alert('Game Over');
+    }
+  }
+
   criarBG();
   criarCobrinha();
+  drawComida();
 
   let snakex = snake[0].x;
   let snakey = snake[0].y;
@@ -65,7 +91,15 @@ function iniciarJogo() {
   if (direction == 'up') snakey -= box;
   if (direction == 'down') snakey += box;
 
-  snake.pop(); /*Retira o ultimo array, dando a impressão que esta movimentando */
+  /* Fazer a cobra crescer ao pegar comida */
+
+  if (snakex != comida.x || snakey != comida.y) {
+    snake.pop(); /*Retira o ultimo array, dando a impressão que esta movimentando */
+  } else {
+    (comida.x = Math.floor(Math.random() * 15 + 1) * box),
+      (comida.y = Math.floor(Math.random() * 15 + 1) * box);
+  }
+
   let newHead = {
     x: snakex,
     y: snakey,
